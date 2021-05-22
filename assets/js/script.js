@@ -108,25 +108,24 @@ const finishEditing = (descriptionEl) => {
 };
 
 // If you press either the description or the button, you get the same result, be that editing or finishing editing. 
-// TODO: Make the button work both to start and end editing. Don't know why it doesn't
+containerEl.on("click", ".saveBtn", function() {
+    const descriptionEl = $(this).siblings(".description");
+
+    $(this).trigger("blur");
+    
+    if (descriptionEl.is("div")) startEditing(descriptionEl);
+    else finishEditing(descriptionEl);
+})
 containerEl.on("click", "div.description", function() {
     startEditing($(this));
 });
-containerEl.on("blur", "textarea.description", function() {
-    finishEditing($(this));
+// If the clicked item is not the save button, stop editing -- otherwise, this event fights with the above events
+containerEl.on("blur", "textarea.description", function(event) {
+    const clickedEl = event.relatedTarget;
+
+    if (!$(clickedEl).is(".saveBtn")) finishEditing($(this));
 });
 
-// containerEl.on("click", ".saveBtn", function() {
-//     const descriptionEl = $(this).siblings(".description");
-//     console.log(descriptionEl)
-//     $(this).trigger("blur");
-    
-//     if (descriptionEl.is("div")) {
-//         startEditing(descriptionEl);
-//     } else {
-//         finishEditing(descriptionEl);
-//     }
-// })
 
 displayDay();
 createHourBlocks();
